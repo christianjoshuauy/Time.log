@@ -1,7 +1,55 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@using AttendanceTracker.Models
 
 <PageTitle>Dashboard</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="dashboard-container">
+    <button class="time-in">Time In</button>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Time In</th>
+            <th>Time Out</th>
+        </tr>
+        @foreach (var attendance in Attendances)
+        {
+            <tr>
+                <td>@attendance.Employee.Username</td>
+                <td>@attendance.TimeIn.ToString("g")</td>
+                <td>@(attendance.TimeOut.HasValue ? attendance.TimeOut.Value.ToString("g") : "Still Clocked In")</td>
+            </tr>
+        }
+    </table>
+</div>
 
-Welcome to your new app.
+@code {
+    // Sample data for employees and their attendance
+    private List<Attendance> Attendances { get; set; } = new()
+{
+new Attendance
+{
+Id = 1,
+EmployeeId = 1,
+Employee = new Employee { Id = 1, Username = "JohnDoe", DiscordAuthToken = "abc123" },
+TimeIn = DateTime.Now.AddHours(-4),
+TimeOut = DateTime.Now.AddHours(-2)
+},
+new Attendance
+{
+Id = 2,
+EmployeeId = 2,
+Employee = new Employee { Id = 2, Username = "JaneSmith", DiscordAuthToken = "def456" },
+TimeIn = DateTime.Now.AddHours(-8),
+TimeOut = DateTime.Now.AddHours(-1)
+},
+new Attendance
+{
+Id = 3,
+EmployeeId = 3,
+Employee = new Employee { Id = 3, Username = "BobMarley", DiscordAuthToken = "ghi789" },
+TimeIn = DateTime.Now.AddHours(-6),
+TimeOut = null // User is still clocked in
+}
+};
+}
