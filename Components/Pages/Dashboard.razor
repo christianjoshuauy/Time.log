@@ -1,62 +1,65 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@using AttendanceTracker.Models
+@inject IAttendanceService AttendanceService
+@inject UserContext UserContext
 
 <PageTitle>Dashboard</PageTitle>
 
-<div class="dashboard-container">
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Time In</th>
-            <th>Time Out</th>
-            <th>Actions</th>
-        </tr>
-        @foreach (var attendance in Attendances)
-        {
-            <tr>
-                <td>@attendance.Employee.Username</td>
-                <td>@attendance.TimeIn.ToString("g")</td>
-                <td>@(attendance.TimeOut.HasValue ? attendance.TimeOut.Value.ToString("g") : "Still Clocked In")</td>
-                <td>
-                    <button class="ellipsis-btn">
-                        •••
-                    </button>
-                </td>
-            </tr>
-        }
-    </table>
-</div>
+<AttendanceTable EmployeeAttendances="@employeesAttendance" />
 
-<button class="time-in">Time In</button>
+@if (IsClockedIn)
+{
+    <button class="time-in" @onclick="HandleTimeOut">Time Out</button>
+}
+else
+{
+    <button class="time-in" @onclick="HandleTimeIn">Time In</button>
+}
+
 
 @code {
-    // Sample data for employees and their attendance
-    private List<Attendance> Attendances { get; set; } = new()
-{
-new Attendance
-{
-Id = 1,
-EmployeeId = 1,
-Employee = new Employee { Id = 1, Username = "JohnDoe", DiscordAuthToken = "abc123" },
-TimeIn = DateTime.Now.AddHours(-4),
-TimeOut = DateTime.Now.AddHours(-2)
-},
-new Attendance
-{
-Id = 2,
-EmployeeId = 2,
-Employee = new Employee { Id = 2, Username = "JaneSmith", DiscordAuthToken = "def456" },
-TimeIn = DateTime.Now.AddHours(-8),
-TimeOut = DateTime.Now.AddHours(-1)
-},
-new Attendance
-{
-Id = 3,
-EmployeeId = 3,
-Employee = new Employee { Id = 3, Username = "BobMarley", DiscordAuthToken = "ghi789" },
-TimeIn = DateTime.Now.AddHours(-6),
-TimeOut = null // User is still clocked in
-}
-};
+    private List<EmployeeAttendanceDto> employeesAttendance = new();
+    private bool IsClockedIn = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employeesAttendance = await AttendanceService.GetAttendances();
+        IsClockedIn = CheckIfClockedIn();
+    }
+    private bool CheckIfClockedIn()
+    {
+        if (employeesAttendance == null || employeesAttendance.Count == 0 || UserContext.CurrentEmployee == null)
+        {
+            return false;
+        }
+        var employee = employeesAttendance.FirstOrDefault(e => e.Id == UserContext.CurrentEmployee.Id);
+        if (employee != null)
+        {
+            return employee.Attendances.Any(a => a.TimeOut == null);
+        }
+        return false;
+    }
+    private async Task HandleTimeIn(MouseEventArgs e)
+    {
+        var attendance = await AttendanceService.EmployeeTimeIn(UserContext.CurrentEmployee.Id);
+        employeesAttendance.First(e => e.Id == UserContext.CurrentEmployee.Id).Attendances.Add(attendance);
+        IsClockedIn = true;
+    }
+    private async Task HandleTimeOut(MouseEventArgs e)
+    {
+        await AttendanceService.EmployeeTimeOut(UserContext.CurrentEmployee.Id);
+        //Refres
+        var employee = employeesAttendance.FirstOrDefault(e => e.Id == UserContext.CurrentEmployee.Id);
+
+        if (employee != null)
+        {
+            var currentAttendance = employee.Attendances.FirstOrDefault(a => a.TimeOut == null);
+
+            if (currentAttendance != null)
+            {
+                currentAttendance.TimeOut = DateTime.UtcNow;
+                StateHasChanged();
+            }
+        }
+    }
 }

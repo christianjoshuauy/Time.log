@@ -7,6 +7,58 @@ body {
   padding: 0;
 }
 
+.report-preview p {
+  font-size: 16px;
+  white-space: pre-wrap; /* Preserve formatting */
+  word-wrap: break-word;
+  margin-bottom: 0;
+}
+
+.report-preview h4 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.report-preview ul,
+.report-preview ol {
+  padding-left: 20px;
+  margin-bottom: 0.5rem; /* Reduce spacing after lists */
+}
+
+.report-preview li {
+  margin-bottom: 0.2rem; /* Reduce space between list items */
+}
+
+.report-preview blockquote {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 1rem; /* Reduce spacing after blockquotes */
+}
+
+.report-preview code {
+  font-size: 14px;
+  background-color: #1e2124;
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+
+.report-preview pre {
+  background-color: #1e2124;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 0; /* Adjust space below code blocks */
+  white-space: pre-wrap; /* Allow code blocks to wrap */
+}
+
+.report-preview a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.report-preview a:hover {
+  text-decoration: underline;
+}
+
 a,
 .btn-link {
   color: #006bb7;

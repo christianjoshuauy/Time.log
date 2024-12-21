@@ -1,0 +1,60 @@
+@inject IReportService ReportService
+
+<div class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-btn" @onclick="OnClose">×</button>
+        <h3>Attendance Details</h3>
+        <p class="fields"><strong>Employee:</strong> @Attendance.Employee.Username</p>
+        <p class="fields"><strong>Time In:</strong> @Attendance.TimeIn.ToString("g")</p>
+        <p class="fields"><strong>Time Out:</strong> @(Attendance.TimeOut.HasValue ?
+            Attendance.TimeOut.Value.ToString("g") : "Still Clocked In")</p>
+
+        <div class="report-preview">
+            <h4>Report</h4>
+            @if (Report != null)
+            {
+                <p>@((MarkupString)Report.Content)</p>
+            }
+            else if (IsLoading)
+            {
+                <p>Loading...</p>
+            }
+            else
+            {
+                <p>No report associated with this attendance.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Attendance Attendance { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private Report? Report { get; set; }
+    private bool IsLoading { get; set; } = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        IsLoading = true;
+        try
+        {
+            var reports = await ReportService.GetReports();
+            Report = reports.FirstOrDefault(r => r.AttendanceId == Attendance.Id);
+            if (Report != null) Report.Content = ConvertMarkdowntoHtml(Report.Content);
+        }
+        catch
+        {
+            Report = null;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private string ConvertMarkdowntoHtml(string content) => Markdown.ToHtml(content);
+}

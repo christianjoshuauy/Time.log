@@ -1,10 +1,19 @@
 using AttendanceTracker.Components;
+using AttendanceTracker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri("http://localhost:5276/api/")
+});
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<UserContext>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 var app = builder.Build();
 

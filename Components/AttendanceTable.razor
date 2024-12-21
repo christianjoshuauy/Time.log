@@ -1,0 +1,70 @@
+<div class="table-container">
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Time In</th>
+            <th>Time Out</th>
+            <th>Actions</th>
+        </tr>
+        @foreach (var attendance in Attendances)
+        {
+            <tr>
+                <td>@attendance.Employee.Username</td>
+                <td>@attendance.TimeIn.ToString("g")</td>
+                <td>@(attendance.TimeOut.HasValue ? attendance.TimeOut.Value.ToString("g") : "Still Clocked In")</td>
+                <td>
+                    <button class="ellipsis-btn" @onclick="() => OpenModal(attendance)">
+                        •••
+                    </button>
+                </td>
+            </tr>
+        }
+    </table>
+    @if (showModal && selectedAttendance != null)
+    {
+        <AttendanceModal Attendance="selectedAttendance" OnClose="CloseModal" />
+    }
+</div>
+
+@code {
+    [Parameter]
+    public required List<EmployeeAttendanceDto> EmployeeAttendances { get; set; }
+    private List<Attendance> Attendances { get; set; } = new();
+    private bool showModal = false;
+    private Attendance? selectedAttendance = null;
+
+    protected override void OnParametersSet()
+    {
+        if (EmployeeAttendances != null && EmployeeAttendances.Any())
+        {
+            Attendances = EmployeeAttendances
+            .SelectMany(dto => dto.Attendances.Select(a => new Attendance
+                {
+                    Id = a.Id,
+                    EmployeeId = dto.Id,
+                    Employee = new Employee
+                    {
+                        Id = dto.Id,
+                        Username = dto.Username,
+                    },
+                    TimeIn = a.TimeIn,
+                    TimeOut = a.TimeOut
+                }))
+            .ToList();
+
+            Console.WriteLine($"Attendance count after mapping: {Attendances.Count}");
+        }
+    }
+
+    private void OpenModal(Attendance attendance)
+    {
+        selectedAttendance = attendance;
+        showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        selectedAttendance = null;
+        showModal = false;
+    }
+}

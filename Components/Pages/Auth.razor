@@ -1,0 +1,128 @@
+﻿@page "/auth"
+@rendermode InteractiveServer
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Auth</PageTitle>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h4>@(isLogin ? "Login" : "Sign Up")</h4>
+        @if (isSignupSuccess)
+        {
+            <p class="success-message">You have successfully signed up! You can now <span
+                    @onclick="SwitchMode">Login</span>.</p>
+        }
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p class="error-message">@errorMessage</p>
+        }
+        @if (isLogin)
+        {
+            <EditForm Model="loginDto" OnValidSubmit="HandleLogin">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group">
+                    <label for="Username">Username</label>
+                    <InputText id="Username" @bind-Value="loginDto.Username" class="form-control"
+                        placeholder="Enter your username" />
+                </div>
+
+                <div class="form-group">
+                    <label for="Password">Password</label>
+                    <InputText id="Password" @bind-Value="loginDto.Password" type="password" class="form-control"
+                        placeholder="Enter your password" />
+                </div>
+
+                <button class="btn btn-primary" type="submit">Login</button>
+                <p class="switch-mode-text" @onclick="SwitchMode">Don't have an account? <span>Sign Up</span></p>
+            </EditForm>
+        }
+        else
+        {
+            <EditForm Model="signupDto" OnValidSubmit="HandleSignup">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group">
+                    <label for="Username">Username</label>
+                    <InputText id="Username" @bind-Value="signupDto.Username" class="form-control"
+                        placeholder="Choose a username" />
+                </div>
+
+                <div class="form-group">
+                    <label for="FirstName">First Name</label>
+                    <InputText id="FirstName" @bind-Value="signupDto.FirstName" class="form-control"
+                        placeholder="Enter your first name" />
+                </div>
+
+                <div class="form-group">
+                    <label for="Password">Password</label>
+                    <InputText id="Password" @bind-Value="signupDto.Password" type="password" class="form-control"
+                        placeholder="Create a password" />
+                </div>
+
+                <div class="form-group">
+                    <label for="DiscordAuthToken">Discord Auth Token</label>
+                    <InputText id="DiscordAuthToken" @bind-Value="signupDto.DiscordAuthToken" class="form-control"
+                        placeholder="Enter your Discord token" />
+                </div>
+
+                <button class="btn btn-primary" type="submit">Sign Up</button>
+                <p class="switch-mode-text" @onclick="SwitchMode">Already have an account? <span>Login</span></p>
+            </EditForm>
+        }
+    </div>
+</div>
+
+@code {
+    private bool isLogin = true;
+    private bool isSignupSuccess = false;
+    private string errorMessage = string.Empty;
+
+    private LoginDto loginDto = new() { Username = string.Empty, Password = string.Empty };
+    private SignupDto signupDto = new()
+        {
+            Username = string.Empty,
+            FirstName = string.Empty,
+            Password = string.Empty,
+            DiscordAuthToken = string.Empty
+        };
+
+    private void SwitchMode()
+    {
+        isLogin = !isLogin;
+        isSignupSuccess = false;
+        errorMessage = string.Empty;
+    }
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            await AuthService.Login(loginDto);
+            errorMessage = string.Empty;
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task HandleSignup()
+    {
+        try
+        {
+            await AuthService.Signup(signupDto);
+            isSignupSuccess = true;
+            isLogin = true;
+            errorMessage = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+}

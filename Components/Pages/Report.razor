@@ -1,19 +1,86 @@
-﻿@page "/counter"
+﻿@page "/report"
 @rendermode InteractiveServer
+@inject IAttendanceService AttendanceService
+@inject IReportService ReportService
+@inject UserContext UserContext
+@using AttendanceTracker.Dtos
 
 <PageTitle>Report</PageTitle>
 
-<h1>Counter</h1>
+<div class="report-container">
+    <div>
+        <h3>Creata a report</h3>
+        <form @onsubmit="HandleSubmit">
+            <input type="text" class="title" @bind="title" @bind:event="oninput" placeholder="Title" />
+            <textarea class="content" @oninput="HandleOnInput"></textarea>
+            <button type="submit">Submit</button>
+        </form>
+        @if (!string.IsNullOrWhiteSpace(message))
+        {
+            <p class="message @messageClass">@message</p>
+        }
+    </div>
 
-<p role="status">Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+    <div class="report-preview">
+        <h4>Report</h4>
+        <p class="html-content">@((MarkupString)htmlContent)</p>
+    </div>
+</div>
 
 @code {
-    private int currentCount = 0;
+    private string title = "";
+    private string content = "";
+    private string htmlContent = "";
+    private string message = "";
+    private string messageClass = "";
+    private bool isSubmitting = false;
 
-    private void IncrementCount()
+    private void HandleOnInput(ChangeEventArgs e)
     {
-        currentCount++;
+        content = e.Value?.ToString() ?? "";
+        htmlContent = ConvertMarkdowntoHtml(content);
+    }
+
+    private string ConvertMarkdowntoHtml(string content) => Markdown.ToHtml(content);
+
+    private async Task HandleSubmit()
+    {
+        if (isSubmitting) return; // prevent default double submit
+        isSubmitting = true;
+        message = "";
+
+        try
+        {
+            var attendance = await AttendanceService.GetAttendanceByEmployee(UserContext.CurrentEmployee.Id);
+            var ongoingAttendance = attendance.Attendances.FirstOrDefault(a => !a.TimeOut.HasValue);
+
+            if (ongoingAttendance == null)
+            {
+                SetMessage("No ongoing attendance found for this employee.", isError: true);
+                return;
+            }
+
+            var reportDto = new ReportDto(title, content);
+
+            await ReportService.CreateReport(reportDto, ongoingAttendance.Id);
+            title = "";
+            content = "";
+            htmlContent = "";
+            SetMessage("Report created successfully!", isError: false);
+        }
+        catch (Exception ex)
+        {
+            SetMessage($"Error: {ex.Message}", isError: true);
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void SetMessage(string text, bool isError)
+    {
+        message = text;
+        messageClass = isError ? "error-message" : "success-message";
     }
 }
