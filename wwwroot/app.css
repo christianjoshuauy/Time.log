@@ -9,7 +9,7 @@ body {
 
 .report-preview p {
   font-size: 16px;
-  white-space: pre-wrap; /* Preserve formatting */
+  white-space: pre-wrap;
   word-wrap: break-word;
   margin-bottom: 0;
 }
@@ -22,17 +22,17 @@ body {
 .report-preview ul,
 .report-preview ol {
   padding-left: 20px;
-  margin-bottom: 0.5rem; /* Reduce spacing after lists */
+  margin: 0;
 }
 
 .report-preview li {
-  margin-bottom: 0.2rem; /* Reduce space between list items */
+  margin-bottom: 0.2rem;
 }
 
 .report-preview blockquote {
   margin-left: 20px;
   margin-right: 20px;
-  margin-bottom: 1rem; /* Reduce spacing after blockquotes */
+  margin-bottom: 1rem;
 }
 
 .report-preview code {
@@ -46,8 +46,8 @@ body {
   background-color: #1e2124;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 0; /* Adjust space below code blocks */
-  white-space: pre-wrap; /* Allow code blocks to wrap */
+  margin-bottom: 0;
+  white-space: pre-wrap;
 }
 
 .report-preview a {
@@ -57,6 +57,13 @@ body {
 
 .report-preview a:hover {
   text-decoration: underline;
+}
+
+.html-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 220px;
 }
 
 a,

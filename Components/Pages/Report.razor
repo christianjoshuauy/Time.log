@@ -4,12 +4,13 @@
 @inject IReportService ReportService
 @inject UserContext UserContext
 @using AttendanceTracker.Dtos
+@using System.Text.RegularExpressions
 
 <PageTitle>Report</PageTitle>
 
 <div class="report-container">
     <div>
-        <h3>Creata a report</h3>
+        <h3>Create a report</h3>
         <form @onsubmit="HandleSubmit">
             <input type="text" class="title" @bind="title" @bind:event="oninput" placeholder="Title" />
             <textarea class="content" @oninput="HandleOnInput"></textarea>
@@ -21,9 +22,18 @@
         }
     </div>
 
-    <div class="report-preview">
-        <h4>Report</h4>
-        <p class="html-content">@((MarkupString)htmlContent)</p>
+    <div class="preview-container">
+        <h3>Preview</h3>
+        <div class="report-preview">
+            <div class="profile-picture"></div>
+            <div class="preview-content">
+                <div class="preview-header">
+                    <span class="name">John Doe</span>
+                    <span class="date">Today at 2:54 PM</span>
+                </div>
+                <p class="html-content">@((MarkupString)htmlContent)</p>
+            </div>
+        </div>
     </div>
 </div>
 
