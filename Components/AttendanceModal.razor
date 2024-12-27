@@ -9,11 +9,11 @@
         <p class="fields"><strong>Time Out:</strong> @(Attendance.TimeOut.HasValue ?
             Attendance.TimeOut.Value.ToString("g") : "Still Clocked In")</p>
 
-        <div class="report-preview">
+        <div class="preview-container">
             <h4>Report</h4>
             @if (Report != null)
             {
-                <p>@((MarkupString)Report.Content)</p>
+                <ContentPreview HtmlContent="@Report.Content" />
             }
             else if (IsLoading)
             {

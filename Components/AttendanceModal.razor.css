@@ -50,22 +50,15 @@
   color: #ff0000;
 }
 
-.report-preview {
-  background-color: #282b30;
-  color: #fff;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.preview-container {
+  height: auto;
+  margin-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 10px;
 }
 
-.report-preview h4 {
+.preview-container h4 {
+  margin-bottom: 15px;
   font-size: 22px;
-  margin-bottom: 10px;
-}
-
-.report-preview p {
-  font-size: 16px;
-  white-space: pre-wrap; /* Preserve formatting */
-  word-wrap: break-word;
+  color: #333;
 }

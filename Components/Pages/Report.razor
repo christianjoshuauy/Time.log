@@ -24,16 +24,7 @@
 
     <div class="preview-container">
         <h3>Preview</h3>
-        <div class="report-preview">
-            <div class="profile-picture"></div>
-            <div class="preview-content">
-                <div class="preview-header">
-                    <span class="name">John Doe</span>
-                    <span class="date">Today at 2:54 PM</span>
-                </div>
-                <p class="html-content">@((MarkupString)htmlContent)</p>
-            </div>
-        </div>
+        <ContentPreview HtmlContent="@htmlContent" />
     </div>
 </div>
 
@@ -51,7 +42,8 @@
         htmlContent = ConvertMarkdowntoHtml(content);
     }
 
-    private string ConvertMarkdowntoHtml(string content) => Markdown.ToHtml(content);
+    private string ConvertMarkdowntoHtml(string content) => Markdown.ToHtml(content, new
+    MarkdownPipelineBuilder().DisableHtml().Build());
 
     private async Task HandleSubmit()
     {

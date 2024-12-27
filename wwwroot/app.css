@@ -21,6 +21,8 @@ body {
 
 .report-preview ul,
 .report-preview ol {
+  display: flex;
+  flex-direction: column;
   padding-left: 20px;
   margin: 0;
 }
@@ -57,13 +59,6 @@ body {
 
 .report-preview a:hover {
   text-decoration: underline;
-}
-
-.html-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-height: 220px;
 }
 
 a,

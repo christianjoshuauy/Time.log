@@ -1,0 +1,49 @@
+.report-preview {
+  display: flex;
+  gap: 15px;
+  background-color: #282b30;
+  color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.report-preview h4 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.report-preview p {
+  font-size: 16px;
+  white-space: pre-wrap; /* Preserve formatting */
+  word-wrap: break-word;
+}
+
+.profile-picture {
+  background: url("https://logodownload.org/wp-content/uploads/2017/11/discord-logo-1-1.png");
+  background-size: cover;
+  height: 40px;
+  width: 40px;
+}
+
+.preview-content {
+  width: 80%;
+}
+
+.preview-header .name {
+  font-weight: 500;
+  color: orange;
+}
+
+.preview-header .date {
+  font-size: 12px;
+  color: #a1a1a1;
+}
+
+.html-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 220px;
+}

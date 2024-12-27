@@ -1,0 +1,17 @@
+<div class="report-preview">
+    <div class="profile-picture"></div>
+    <div class="preview-content">
+        <div class="preview-header">
+            <span class="name">@SampleName</span>
+            <span class="date">@SampleDate</span>
+        </div>
+        <p class="html-content">@((MarkupString)((HtmlContent != "") ? (MarkupString)HtmlContent : new("Content is empty.")))</p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string HtmlContent { get; set; } = "";
+    private string SampleName { get; set; } = "John Doe";
+    private string SampleDate { get; set; } = "Today at 2:54 PM";
+}
