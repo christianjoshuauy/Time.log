@@ -32,9 +32,10 @@ public class AuthService : IAuthService
             var response = await _http.PostAsJsonAsync<LoginDto>("login", loginDto);
             response.EnsureSuccessStatusCode();
             var employee = await response.Content.ReadFromJsonAsync<Employee>();
-            _userContext.CurrentEmployee = employee ?? throw new Exception("Invalid username or password");
+            if (employee == null) throw new Exception("Invalid username or password");
             var response2 = await _http.GetFromJsonAsync<string>($"employees/{employee.Id}/discordAuth");
-            _userContext.CurrentEmployee.DiscordAuthToken = response2 ?? "";
+            employee.DiscordAuthToken = response2 ?? "";
+            await _userContext.SaveUserContextAsync(employee);
         }
         catch (Exception e)
         {
