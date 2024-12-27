@@ -12,10 +12,12 @@ public class UserContext
         _localStorage = localStorage;
     }
     public Employee? CurrentEmployee { get; private set; }
+    public bool IsLoading { get; private set; } = true;
 
-    public async Task LoadUser()
+    public async Task LoadUserAsync()
     {
         CurrentEmployee = await _localStorage.GetItemAsync<Employee>(Key);
+        IsLoading = false;
     }
     public async Task SaveUserContextAsync(Employee employee)
     {

@@ -3,18 +3,21 @@
 @inject IAttendanceService AttendanceService
 @inject UserContext UserContext
 
-<PageTitle>Dashboard</PageTitle>
+<RouteGuard>
+    <PageTitle>Dashboard</PageTitle>
 
-<AttendanceTable EmployeeAttendances="@employeesAttendance" />
+    <AttendanceTable EmployeeAttendances="@employeesAttendance" />
 
-@if (IsClockedIn)
-{
-    <button class="time-in" @onclick="HandleTimeOut">Time Out</button>
-}
-else
-{
-    <button class="time-in" @onclick="HandleTimeIn">Time In</button>
-}
+
+    @if (IsClockedIn)
+    {
+        <button class="time-in" @onclick="HandleTimeOut">Time Out</button>
+    }
+    else
+    {
+        <button class="time-in" @onclick="HandleTimeIn">Time In</button>
+    }
+</RouteGuard>
 
 
 @code {
@@ -48,7 +51,6 @@ else
     private async Task HandleTimeOut(MouseEventArgs e)
     {
         await AttendanceService.EmployeeTimeOut(UserContext.CurrentEmployee.Id);
-        //Refres
         var employee = employeesAttendance.FirstOrDefault(e => e.Id == UserContext.CurrentEmployee.Id);
 
         if (employee != null)

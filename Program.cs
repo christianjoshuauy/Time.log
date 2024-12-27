@@ -1,5 +1,6 @@
 using AttendanceTracker.Components;
 using AttendanceTracker.Services;
+using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<UserContext>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddBlazoredLocalStorage();
 
 var app = builder.Build();
 

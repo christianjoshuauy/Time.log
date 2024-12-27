@@ -6,27 +6,29 @@
 @using AttendanceTracker.Dtos
 @using System.Text.RegularExpressions
 
-<PageTitle>Report</PageTitle>
+<RouteGuard>
+    <PageTitle>Report</PageTitle>
 
-<div class="report-container">
-    <div>
-        <h3>Create a report</h3>
-        <form @onsubmit="HandleSubmit">
-            <input type="text" class="title" @bind="title" @bind:event="oninput" placeholder="Title" />
-            <textarea class="content" @oninput="HandleOnInput"></textarea>
-            <button type="submit">Submit</button>
-        </form>
-        @if (!string.IsNullOrWhiteSpace(message))
-        {
-            <p class="message @messageClass">@message</p>
-        }
-    </div>
+    <div class="report-container">
+        <div>
+            <h3>Create a report</h3>
+            <form @onsubmit="HandleSubmit">
+                <input type="text" class="title" @bind="title" @bind:event="oninput" placeholder="Title" />
+                <textarea class="content" @oninput="HandleOnInput"></textarea>
+                <button type="submit">Submit</button>
+            </form>
+            @if (!string.IsNullOrWhiteSpace(message))
+            {
+                <p class="message @messageClass">@message</p>
+            }
+        </div>
 
-    <div class="preview-container">
-        <h3>Preview</h3>
-        <ContentPreview HtmlContent="@htmlContent" />
+        <div class="preview-container">
+            <h3>Preview</h3>
+            <ContentPreview HtmlContent="@htmlContent" />
+        </div>
     </div>
-</div>
+</RouteGuard>
 
 @code {
     private string title = "";

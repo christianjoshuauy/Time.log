@@ -1,0 +1,28 @@
+@inject UserContext UserContext
+@inject NavigationManager NavigationManager
+
+@if (UserContext.IsLoading)
+{
+    <p>Loading...</p>
+}
+else if (!UserContext.IsAuthenticated)
+{
+    NavigationManager.NavigateTo("/auth");
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await UserContext.LoadUserAsync();
+            StateHasChanged();
+        }
+    }
+}
