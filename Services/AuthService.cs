@@ -19,7 +19,7 @@ public class AuthService : IAuthService
             var response = await _http.PostAsJsonAsync<SignupDto>("register", signupDto);
             response.EnsureSuccessStatusCode();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw new Exception("Username already exists");
         }
@@ -37,7 +37,7 @@ public class AuthService : IAuthService
             employee.DiscordAuthToken = response2 ?? "";
             await _userContext.SaveUserContextAsync(employee);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw new Exception("Invalid username or password");
         }
