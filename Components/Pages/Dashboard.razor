@@ -44,12 +44,22 @@
     }
     private async Task HandleTimeIn(MouseEventArgs e)
     {
+        if (UserContext.CurrentEmployee == null)
+        {
+            return;
+        }
+
         var attendance = await AttendanceService.EmployeeTimeIn(UserContext.CurrentEmployee.Id);
         employeesAttendance.First(e => e.Id == UserContext.CurrentEmployee.Id).Attendances.Add(attendance);
         IsClockedIn = true;
     }
     private async Task HandleTimeOut(MouseEventArgs e)
     {
+        if (UserContext.CurrentEmployee == null)
+        {
+            return;
+        }
+
         await AttendanceService.EmployeeTimeOut(UserContext.CurrentEmployee.Id);
         var employee = employeesAttendance.FirstOrDefault(e => e.Id == UserContext.CurrentEmployee.Id);
 

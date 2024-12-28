@@ -14,7 +14,7 @@
             <h3>Create a report</h3>
             <form @onsubmit="HandleSubmit">
                 <input type="text" class="title" @bind="title" @bind:event="oninput" placeholder="Title" />
-                <textarea class="content" @oninput="HandleOnInput"></textarea>
+                <textarea class="content" @oninput="HandleOnInput" placeholder="Content"></textarea>
                 <button type="submit">Submit</button>
             </form>
             @if (!string.IsNullOrWhiteSpace(message))
@@ -55,6 +55,12 @@
 
         try
         {
+            if (UserContext.CurrentEmployee == null)
+            {
+                SetMessage("No employee found.", isError: true);
+                return;
+            }
+
             var attendance = await AttendanceService.GetAttendanceByEmployee(UserContext.CurrentEmployee.Id);
             var ongoingAttendance = attendance.Attendances.FirstOrDefault(a => !a.TimeOut.HasValue);
 
